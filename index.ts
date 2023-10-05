@@ -14,8 +14,88 @@ enum Tile {
   KEY2, LOCK2
 }
 
-enum Input {
+enum RawInput {
   UP, DOWN, LEFT, RIGHT
+}
+
+interface Input{
+  isRight() : boolean;
+  isLeft() : boolean;
+  isUp() : boolean;
+  isDown() : boolean;
+
+  handle() : void;
+}
+
+class RIGHT implements Input{
+  isRight(): boolean {
+    return true
+  }
+  isLeft(): boolean {
+    return false
+  }
+  isUp(): boolean {
+    return false
+  }
+  isDown(): boolean {
+    return false
+  }
+
+  handle(){
+      moveHorizontal(1);
+  }
+  
+}
+class LEFT implements Input{
+  isRight(): boolean {
+    return false
+  }
+  isLeft(): boolean {
+    return true
+  }
+  isUp(): boolean {
+    return false
+  }
+  isDown(): boolean {
+    return false
+  }
+  handle(){
+    moveHorizontal(-1);
+  }
+}
+class UP implements Input{
+  isRight(): boolean {
+    return false
+  }
+  isLeft(): boolean {
+    return false
+  }
+  isUp(): boolean {
+    return true
+  }
+  isDown(): boolean {
+    return false
+  }
+  handle(){
+    moveVertical(-1);
+  }
+}
+class DOWN implements Input{
+  isRight(): boolean {
+    return false
+  }
+  isLeft(): boolean {
+    return false
+  }
+  isUp(): boolean {
+    return false
+  }
+  isDown(): boolean {
+    return true
+  }
+  handle(){
+      moveVertical(1);
+  }
 }
 
 let playerx = 1;
@@ -88,20 +168,23 @@ function update() {
 function handleInputs(){
   while (inputs.length > 0) {
     let current = inputs.pop();
-    handleInput(current)
+    current.handle();
+    // handleInput(current)
   }
 }
 
-function handleInput(current: Input){
-  if (current === Input.LEFT)
-    moveHorizontal(-1);
-  else if (current === Input.RIGHT)
-    moveHorizontal(1);
-  else if (current === Input.UP)
-    moveVertical(-1);
-  else if (current === Input.DOWN)
-    moveVertical(1);
-}
+// 2. 제거
+// function handleInput2(input: Input){
+//   input.handle(); // -> 1. 다섯줄 제한 지킬수 있게됨
+//   // if (input.isLeft())
+//   //   moveHorizontal(-1);
+//   // else if (input.isRight())
+//   //   moveHorizontal(1);
+//   // else if (input.isUp())
+//   //   moveVertical(-1);
+//   // else if (input.isDown())
+//   //   moveVertical(1);
+// }
 
 function updateMap(){
   for (let y = map.length - 1; y >= 0; y--) {
@@ -162,6 +245,10 @@ function drwaMap(g: CanvasRenderingContext2D){
   }
 }
 
+function colorOfTIle(){
+  
+}
+
 function drawPlayer(g: CanvasRenderingContext2D){
   g.fillStyle = "#ff0000";
   g.fillRect(playerx * TILE_SIZE, playery * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -187,9 +274,9 @@ const UP_KEY = "ArrowUp";
 const RIGHT_KEY = "ArrowRight";
 const DOWN_KEY = "ArrowDown";
 window.addEventListener("keydown", e => {
-  if (e.key === LEFT_KEY || e.key === "a") inputs.push(Input.LEFT);
-  else if (e.key === UP_KEY || e.key === "w") inputs.push(Input.UP);
-  else if (e.key === RIGHT_KEY || e.key === "d") inputs.push(Input.RIGHT);
-  else if (e.key === DOWN_KEY || e.key === "s") inputs.push(Input.DOWN);
+  if (e.key === LEFT_KEY || e.key === "a") inputs.push(new LEFT());
+  else if (e.key === UP_KEY || e.key === "w") inputs.push(new UP());
+  else if (e.key === RIGHT_KEY || e.key === "d") inputs.push(new RIGHT());
+  else if (e.key === DOWN_KEY || e.key === "s") inputs.push(new DOWN());
 });
 
