@@ -28,7 +28,11 @@ interface Tile2 {
   isKey2(): boolean;
   isLock2(): boolean;
 
-  color(g: CanvasRenderingContext2D) : boolean
+  color(g: CanvasRenderingContext2D) : void
+  draw(g : CanvasRenderingContext2D, x : number, y : number) : void;
+  isEdible() : boolean;
+  isPushable() : boolean;
+
 }
 
 class Air implements Tile2 {
@@ -47,6 +51,13 @@ class Air implements Tile2 {
   color(g: CanvasRenderingContext2D) {
     //모든 조건문이 false
   }
+  draw(g : CanvasRenderingContext2D, x : number, y : number){
+
+  }
+  isEdible(){
+    return true;
+  };
+  isPushable() { return false; }
 }
 
 class Flux implements Tile2 {
@@ -64,8 +75,16 @@ class Flux implements Tile2 {
   isLock2() { return false; }
 
   color(g: CanvasRenderingContext2D) {
-      g.fillStyle = "#ccffcc";
+    g.fillStyle = "#ccffcc";
   }
+  draw(g : CanvasRenderingContext2D, x : number, y : number){
+    g.fillStyle = "#ccffcc";
+    g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+  }
+  isEdible(){
+    return true
+  };
+  isPushable() { return false; }
 }
 
 class Unbreakable implements Tile2 {
@@ -85,6 +104,14 @@ class Unbreakable implements Tile2 {
   color(g: CanvasRenderingContext2D) {
       g.fillStyle = "#999999";
   }
+  draw(g : CanvasRenderingContext2D, x : number, y : number){
+    g.fillStyle = "#999999";
+    g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+  }
+  isEdible(){
+    return false;
+  };
+  isPushable() { return false; }
 }
 
 class Player implements Tile2 {
@@ -103,6 +130,12 @@ class Player implements Tile2 {
 
   color(g: CanvasRenderingContext2D) {
   }
+  draw(g : CanvasRenderingContext2D, x : number, y : number){
+  }
+  isEdible(){
+    return false;
+  };
+  isPushable() { return false; }
 }
 
 class Stone implements Tile2 {
@@ -121,6 +154,14 @@ class Stone implements Tile2 {
   color(g: CanvasRenderingContext2D) {
     g.fillStyle = "#0000cc";
   }
+  draw(g : CanvasRenderingContext2D, x : number, y : number){
+    g.fillStyle = "#0000cc";
+    g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+  }
+  isEdible(){
+    return false;
+  };
+  isPushable() { return true; }
 }
 
 class FallingStone implements Tile2 {
@@ -139,6 +180,14 @@ class FallingStone implements Tile2 {
   color(g: CanvasRenderingContext2D) {
     g.fillStyle = "#0000cc";
   }
+  draw(g : CanvasRenderingContext2D, x : number, y : number){
+    g.fillStyle = "#0000cc";
+    g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+  }
+  isEdible(){
+    return false;
+  };
+  isPushable() { return false; }
 }
 
 class Box implements Tile2 {
@@ -158,6 +207,14 @@ class Box implements Tile2 {
   color(g: CanvasRenderingContext2D) {
     g.fillStyle = "#8b4513";
   }
+  draw(g : CanvasRenderingContext2D, x : number, y : number){
+    g.fillStyle = "#8b4513";
+    g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+  }
+  isEdible(){
+    return false;
+  };
+  isPushable() { return true; }
 }
 
 class FallingBox implements Tile2 {
@@ -176,6 +233,14 @@ class FallingBox implements Tile2 {
   color(g: CanvasRenderingContext2D) {
     g.fillStyle = "#8b4513";
   }
+  draw(g : CanvasRenderingContext2D, x : number, y : number){
+    g.fillStyle = "#8b4513";
+    g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+  }
+  isEdible(){
+    return false;
+  };
+  isPushable() { return false; }
 }
 
 class Key1 implements Tile2 {
@@ -193,7 +258,16 @@ class Key1 implements Tile2 {
   isLock2() { return false; }
   color(g: CanvasRenderingContext2D) {
     g.fillStyle = "#ffcc00";
-  }}
+  }
+  draw(g : CanvasRenderingContext2D, x : number, y : number){
+    g.fillStyle = "#ffcc00";
+    g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+  }
+  isEdible(){
+    return false;
+  };
+  isPushable() { return false; }
+}
 
 class Lock1 implements Tile2 {
   isAir() { return false; }
@@ -210,7 +284,16 @@ class Lock1 implements Tile2 {
   isLock2() { return false; }
   color(g: CanvasRenderingContext2D) {
     g.fillStyle = "#ffcc00";
-  }}
+  }
+  draw(g : CanvasRenderingContext2D, x : number, y : number){
+    g.fillStyle = "#ffcc00";
+    g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+  }
+  isEdible(){
+    return false;
+  };
+  isPushable() { return false; }
+}
 
 class Key2 implements Tile2 {
   isAir() { return false; }
@@ -227,7 +310,16 @@ class Key2 implements Tile2 {
   isLock2() { return false; }
   color(g: CanvasRenderingContext2D) {
     g.fillStyle = "#00ccff";
-  }}
+  }
+  draw(g : CanvasRenderingContext2D, x : number, y : number){
+    g.fillStyle = "#00ccff";
+    g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+  }
+  isEdible(){
+    return false;
+  };
+  isPushable() { return false; }
+}
 
 class Lock2 implements Tile2 {
   isAir() { return false; }
@@ -244,7 +336,16 @@ class Lock2 implements Tile2 {
   isLock2() { return true; }
   color(g: CanvasRenderingContext2D) {
     g.fillStyle = "#00ccff";
-  }}
+  }
+  draw(g : CanvasRenderingContext2D, x : number, y : number){
+    g.fillStyle = "#00ccff";
+    g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+  }
+  isEdible(){
+    return false;
+  };
+  isPushable() { return false; }
+}
 
 
 
@@ -385,7 +486,7 @@ function transformMap(){
   for (let y = 0; y < rawMap.length; y++) {
     map[y] = new Array(rawMap[y].length);
     for (let x = 0; x < rawMap[y].length; x++) {
-      this = transformTile(rawthis);
+      map[y][x] = transformTile(rawMap[y][x]);
     }
   }
 }
@@ -407,7 +508,7 @@ function removeLock1() {
   for (let y = 0; y < map.length; y++) {
     for (let x = 0; x < map[y].length; x++) {
       if (this.isLock1()) {
-        this = new Air();
+        map[y][x] = new Air();
       }
     }
   }
@@ -417,7 +518,7 @@ function removeLock2() {
   for (let y = 0; y < map.length; y++) {
     for (let x = 0; x < map[y].length; x++) {
       if (this.isLock2()) {
-        this = new Air();
+        map[y][x] = new Air();
       }
     }
   }
@@ -431,11 +532,9 @@ function moveToTile(newx: number, newy: number) {
 }
 
 function moveHorizontal(dx: number) {
-  if (map[playery][playerx + dx].isFlux()
-    || map[playery][playerx + dx].isAir()) {
+  if (map[playery][playerx + dx].isEdible()) {
     moveToTile(playerx + dx, playery);
-  } else if ((map[playery][playerx + dx].isStone()
-    || map[playery][playerx + dx].isBox())
+  } else if ((map[playery][playerx + dx].isPushable())
     && map[playery][playerx + dx + dx].isAir()
     && !map[playery + 1][playerx + dx].isAir()) {
     map[playery][playerx + dx + dx] = map[playery][playerx + dx];
@@ -452,10 +551,9 @@ function moveHorizontal(dx: number) {
 }
 
 function moveVertical(dy: number) {
-  if (map[playery + dy][playerx].isFlux()
-    || map[playery + dy][playerx].isAir()) {
+  if (map[playery + dy][playerx].isEdible()) {
     moveToTile(playerx, playery + dy);
-  } else if (map[playery + dy][playerx].isKey1()) {
+  } else if (map[playery + dy][playerx].isPushable()) {
     // remove(new Lock1());
     removeLock1();
     moveToTile(playerx, playery + dy);
@@ -504,15 +602,15 @@ function updateTile(x: number, y: number) {
   if ((this.isStone() || this.isFallingStone())
     && map[y + 1][x].isAir()) {
     map[y + 1][x] = new FallingStone();
-    this = new Air();
+    map[y][x] = new Air();
   } else if ((this.isBox() || this.isFallingBox())
     && map[y + 1][x].isAir()) {
     map[y + 1][x] = new FallingBox();
-    this = new Air();
+    map[y][x] = new Air();
   } else if (this.isFallingStone()) {
-    this = new Stone();
+    map[y][x] = new Stone();
   } else if (this.isFallingBox()) {
-    this = new Box();
+    map[y][x] = new Box();
   }
 }
 
@@ -532,14 +630,28 @@ function draw() {
 function drwaMap(g: CanvasRenderingContext2D) {
   for (let y = 0; y < map.length; y++) {
     for (let x = 0; x < map[y].length; x++) {
-      //인라인화
-      map[y][x].color(g); //인라인화 된 본문
-      // colorOfTIle(g, x, y);
-      if (!this.isAir() && this.isPlayer())
-        g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+      map[y][x].draw(g ,x, y);
+      // drawTile(g,x,y)
+
     }
   }
 }
+
+// function drawTile(
+//   g : CanvasRenderingContext2D,
+//   x : number,
+//   y : number){
+
+//   // 클래스로 코드 이관-> 한줄로 다끝남
+//   map[y][x].draw(g ,x, y);
+
+//   //인라인화
+//   // map[y][x].color(g); //인라인화 된 본문
+//   // // colorOfTIle(g, x, y);
+//   // if (!this.isAir() && this.isPlayer())
+//   //   g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+// }
+
 
 
 //else if 문 사용위반
