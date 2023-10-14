@@ -14,6 +14,45 @@ enum RawTile {
   KEY2, LOCK2
 }
 
+enum RawFallingState {
+  FALLING, RESTING
+}
+
+interface FallingState {
+  isFalling() : boolean;
+  // isResting() : boolean;
+  moveHorizontal(tile : Tile, dx : number) : void;
+}
+
+class Falling implements FallingState {
+  isFalling(): boolean {
+    return true;
+  }
+  // isResting(): boolean {
+  //   return false;
+  // }
+  moveHorizontal(tile: Tile, dx: number): void {
+  }
+}
+
+class Resting implements FallingState {
+  isFalling(): boolean {
+    return false;
+  }
+  // isResting(): boolean {
+  //   return true;
+  // }
+  moveHorizontal(tile: Tile, dx: number): void {
+      if (map[playery][playerx + dx + dx].isAir()
+        && !map[playery + 1][playerx + dx].isAir()) 
+      {
+        map[playery][playerx + dx + dx] = tile;
+        moveToTile(playerx + dx, playery);
+      }
+    }
+  }
+
+
 interface Tile {
   isAir(): boolean;
   isStone(): boolean;
@@ -94,14 +133,16 @@ class Player implements Tile {
 }
 
 class Stone implements Tile {
-  private falling : boolean;
-  constructor(falling: boolean){
-    this.falling = falling; //false
+  // private falling : boolean;
+  constructor(private falling: FallingState){
+    this.falling = falling;
   }
 
   isAir() { return false; }
   isStone() { return true; }
-  isFallingStone() { return this.falling; } //상수대신 필드반환
+  // isFallingStone() { return this.falling } //상수대신 필드반환
+  // isFallingStone() { return this.falling === FallingState.FALLING; } // enum 방식
+  isFallingStone() { return this.falling.isFalling(); } // class 대체 방식
   isBox() { return false; }
   isFallingBox() { return false; }
   isLock1() { return false; }
@@ -111,14 +152,19 @@ class Stone implements Tile {
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
   moveHorizontal(dx: number) {
-    if(this.isFallingStone() === false){
-      if (map[playery][playerx + dx + dx].isAir()
-        && !map[playery + 1][playerx + dx].isAir()) {
-        map[playery][playerx + dx + dx] = this;
-        moveToTile(playerx + dx, playery);
-      }
-    }
-    else if(this.isFallingStone() === true){}
+    // 클래스로 코드 이관
+
+    // if(this.isFallingStone() === false){
+    //   if (map[playery][playerx + dx + dx].isAir()
+    //     && !map[playery + 1][playerx + dx].isAir()) {
+    //     map[playery][playerx + dx + dx] = this;
+    //     moveToTile(playerx + dx, playery);
+    //   }
+    // }
+    // else if(this.isFallingStone() === true){}
+
+    //이관
+    this.falling.moveHorizontal(this, dx);
   }
   moveVertical(dy: number) { }
 }
@@ -315,8 +361,8 @@ function transformTile(tile: RawTile) {
     case RawTile.AIR: return new Air();
     case RawTile.PLAYER: return new Player();
     case RawTile.UNBREAKABLE: return new Unbreakable();
-    case RawTile.STONE: return new Stone(false);
-    case RawTile.FALLING_STONE: return new Stone(true);
+    case RawTile.STONE: return new Stone(new Falling());
+    case RawTile.FALLING_STONE: return new Stone(FallingState.FALLING);
     case RawTile.BOX: return new Box();
     case RawTile.FALLING_BOX: return new FallingBox();
     case RawTile.FLUX: return new Flux();
@@ -388,14 +434,14 @@ function updateMap() {
 function updateTile(x: number, y: number) {
   if ((map[y][x].isStone() || map[y][x].isFallingStone())
     && map[y + 1][x].isAir()) {
-    map[y + 1][x] = new Stone(true);
+    map[y + 1][x] = new Stone(FallingState.FALLING);
     map[y][x] = new Air();
   } else if ((map[y][x].isBox() || map[y][x].isFallingBox())
     && map[y + 1][x].isAir()) {
     map[y + 1][x] = new FallingBox();
     map[y][x] = new Air();
   } else if (map[y][x].isFallingStone()) {
-    map[y][x] = new Stone(false);
+    map[y][x] = new Stone(FallingState.RESTING);
   } else if (map[y][x].isFallingBox()) {
     map[y][x] = new Box();
   }
