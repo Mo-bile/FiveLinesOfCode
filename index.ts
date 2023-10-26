@@ -55,18 +55,28 @@ class Resting implements FallingState {
 
 interface Tile {
   isAir(): boolean;
-  isStone(): boolean;
+  // isStone(): boolean;
   isFallingStone(): boolean;
-  isBox(): boolean;
+  // isBox(): boolean;
   isFallingBox(): boolean;
   isLock1(): boolean;
   isLock2(): boolean;
   draw(g: CanvasRenderingContext2D, x: number, y: number): void;
   moveHorizontal(dx: number): void;
   moveVertical(dy: number): void;
+  isStony(): boolean;
+  isBoxy(): boolean;
+  drop() : void;
+  rest() : void;
 }
 
 class Air implements Tile {
+  drop(): void {
+    throw new Error("Method not implemented.");
+  }
+  rest(): void {
+    throw new Error("Method not implemented.");
+  }
   isAir() { return true; }
   isStone() { return false; }
   isFallingStone() { return false; }
@@ -81,9 +91,17 @@ class Air implements Tile {
   moveVertical(dy: number) {
     moveToTile(playerx, playery + dy);
   }
+  isStony() { return false; }
+  isBoxy() { return false; }
 }
 
 class Flux implements Tile {
+  drop(): void {
+    throw new Error("Method not implemented.");
+  }
+  rest(): void {
+    throw new Error("Method not implemented.");
+  }
   isAir() { return false; }
   isStone() { return false; }
   isFallingStone() { return false; }
@@ -101,9 +119,17 @@ class Flux implements Tile {
   moveVertical(dy: number) {
     moveToTile(playerx, playery + dy);
   }
+  isStony() { return false; }
+  isBoxy() { return false; }
 }
 
 class Unbreakable implements Tile {
+  drop(): void {
+    throw new Error("Method not implemented.");
+  }
+  rest(): void {
+    throw new Error("Method not implemented.");
+  }
   isAir() { return false; }
   isStone() { return false; }
   isFallingStone() { return false; }
@@ -117,9 +143,17 @@ class Unbreakable implements Tile {
   }
   moveHorizontal(dx: number) { }
   moveVertical(dy: number) { }
+  isStony() { return false; }
+  isBoxy() { return false; }
 }
 
 class Player implements Tile {
+  drop(): void {
+    throw new Error("Method not implemented.");
+  }
+  rest(): void {
+    throw new Error("Method not implemented.");
+  }
   isAir() { return false; }
   isStone() { return false; }
   isFallingStone() { return false; }
@@ -130,6 +164,8 @@ class Player implements Tile {
   draw(g: CanvasRenderingContext2D, x: number, y: number) { }
   moveHorizontal(dx: number) { }
   moveVertical(dy: number) { }
+  isStony() { return false; }
+  isBoxy() { return false; }
 }
 
 class Stone implements Tile {
@@ -137,7 +173,7 @@ class Stone implements Tile {
   constructor(private falling: FallingState){
     this.falling = falling;
   }
-
+  
   isAir() { return false; }
   isStone() { return true; }
   // isFallingStone() { return this.falling } //상수대신 필드반환
@@ -153,20 +189,28 @@ class Stone implements Tile {
   }
   moveHorizontal(dx: number) {
     // 클래스로 코드 이관
-
+    
     // if(this.isFallingStone() === false){
-    //   if (map[playery][playerx + dx + dx].isAir()
-    //     && !map[playery + 1][playerx + dx].isAir()) {
-    //     map[playery][playerx + dx + dx] = this;
-    //     moveToTile(playerx + dx, playery);
-    //   }
-    // }
-    // else if(this.isFallingStone() === true){}
-
-    //이관
-    this.falling.moveHorizontal(this, dx);
-  }
-  moveVertical(dy: number) { }
+      //   if (map[playery][playerx + dx + dx].isAir()
+      //     && !map[playery + 1][playerx + dx].isAir()) {
+        //     map[playery][playerx + dx + dx] = this;
+        //     moveToTile(playerx + dx, playery);
+        //   }
+        // }
+        // else if(this.isFallingStone() === true){}
+        
+        //이관
+        this.falling.moveHorizontal(this, dx);
+      }
+      moveVertical(dy: number) { }
+      isStony() { return true; }
+      isBoxy() { return false; }
+      drop(): void {
+        this.falling = new Falling();
+      }
+      rest(): void {
+        this.falling = new Resting();
+      }
 }
 
 //삭제
@@ -201,11 +245,11 @@ class Stone implements Tile {
 // }
 
 class Box implements Tile {
+  constructor(private falling: FallingState) { }
   isAir() { return false; }
   isStone() { return false; }
-  isFallingStone() { return false; }
+  isFallingBox() { return this.falling.isFalling(); }
   isBox() { return true; }
-  isFallingBox() { return false; }
   isLock1() { return false; }
   isLock2() { return false; }
   draw(g: CanvasRenderingContext2D, x: number, y: number) {
@@ -213,30 +257,31 @@ class Box implements Tile {
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
   moveHorizontal(dx: number) {
-    if (map[playery][playerx + dx + dx].isAir()
-      && !map[playery + 1][playerx + dx].isAir()) {
-      map[playery][playerx + dx + dx] = this;
-      moveToTile(playerx + dx, playery);
+    this.falling.moveHorizontal(this, dx);
     }
-  }
   moveVertical(dy: number) { }
+
+  isStony() { return false; }
+  isBoxy() { return true; }
 }
 
-class FallingBox implements Tile {
-  isAir() { return false; }
-  isStone() { return false; }
-  isFallingStone() { return false; }
-  isBox() { return false; }
-  isFallingBox() { return true; }
-  isLock1() { return false; }
-  isLock2() { return false; }
-  draw(g: CanvasRenderingContext2D, x: number, y: number) {
-    g.fillStyle = "#8b4513";
-    g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-  }
-  moveHorizontal(dx: number) { }
-  moveVertical(dy: number) { }
-}
+// class FallingBox implements Tile {
+//   isAir() { return false; }
+//   isStone() { return false; }
+//   isFallingStone() { return false; }
+//   isBox() { return false; }
+//   isFallingBox() { return true; }
+//   isLock1() { return false; }
+//   isLock2() { return false; }
+//   draw(g: CanvasRenderingContext2D, x: number, y: number) {
+//     g.fillStyle = "#8b4513";
+//     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+//   }
+//   moveHorizontal(dx: number) { }
+//   moveVertical(dy: number) { }
+//   isStony() { return false; }
+//   isBoxy() { return true; }
+// }
 
 class Key1 implements Tile {
   isAir() { return false; }
@@ -258,6 +303,8 @@ class Key1 implements Tile {
     removeLock1();
     moveToTile(playerx, playery + dy);
   }
+  isStony() { return false; }
+  isBoxy() { return false; }
 }
 
 class Lock1 implements Tile {
@@ -274,6 +321,8 @@ class Lock1 implements Tile {
   }
   moveHorizontal(dx: number) { }
   moveVertical(dy: number) { }
+  isStony() { return false; }
+  isBoxy() { return false; }
 }
 
 class Key2 implements Tile {
@@ -296,6 +345,8 @@ class Key2 implements Tile {
     removeLock2();
     moveToTile(playerx, playery + dy);
   }
+  isStony() { return false; }
+  isBoxy() { return false; }
 }
 
 class Lock2 implements Tile {
@@ -312,6 +363,8 @@ class Lock2 implements Tile {
   }
   moveHorizontal(dx: number) { }
   moveVertical(dy: number) { }
+  isStony() { return false; }
+  isBoxy() { return false; }
 }
 
 interface Input {
@@ -361,10 +414,10 @@ function transformTile(tile: RawTile) {
     case RawTile.AIR: return new Air();
     case RawTile.PLAYER: return new Player();
     case RawTile.UNBREAKABLE: return new Unbreakable();
-    case RawTile.STONE: return new Stone(new Falling());
-    case RawTile.FALLING_STONE: return new Stone(FallingState.FALLING);
-    case RawTile.BOX: return new Box();
-    case RawTile.FALLING_BOX: return new FallingBox();
+    case RawTile.STONE: return new Stone(new Resting());
+    case RawTile.FALLING_STONE: return new Stone(new Falling());
+    case RawTile.BOX: return new Box(new Resting());
+    case RawTile.FALLING_BOX: return new Box(new Falling());
     case RawTile.FLUX: return new Flux();
     case RawTile.KEY1: return new Key1();
     case RawTile.LOCK1: return new Lock1();
@@ -432,19 +485,23 @@ function updateMap() {
 }
 
 function updateTile(x: number, y: number) {
-  if ((map[y][x].isStone() || map[y][x].isFallingStone())
-    && map[y + 1][x].isAir()) {
-    map[y + 1][x] = new Stone(FallingState.FALLING);
-    map[y][x] = new Air();
-  } else if ((map[y][x].isBox() || map[y][x].isFallingBox())
-    && map[y + 1][x].isAir()) {
-    map[y + 1][x] = new FallingBox();
-    map[y][x] = new Air();
-  } else if (map[y][x].isFallingStone()) {
-    map[y][x] = new Stone(FallingState.RESTING);
-  } else if (map[y][x].isFallingBox()) {
-    map[y][x] = new Box();
-  }
+  // if (((map[y][x].isStony())
+  //       && map[y + 1][x].isAir()) 
+  //   ||((map[y][x].isBoxy())
+  //       && map[y + 1][x].isAir())
+  //   )
+    // 클래스로 코드 이관 (도우미 메서드 이용)
+    if ((map[y][x].canFall())
+        && map[y + 1][x].isAir()
+    ) {
+      //아래 Else if 와 본문이 같아짐
+      map[y][x].drop();
+      map[y + 1][x] = map[y][x];
+      map[y][x] = new Air();
+  } 
+    else if (map[y][x].isFalling()) {
+      map[y][x].rest();
+  } 
 }
 
 function createGraphics() {
