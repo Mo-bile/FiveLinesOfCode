@@ -195,18 +195,106 @@
 // }
 
 // 7 메서드 인라인화를 사용해서 1단계의 추출을 반대로 함
-class MiniumProcessor{
-    constructor(private accumulator : number){
+// class MiniumProcessor{
+//     constructor(private accumulator : number){
+//     }
+//     processElement(e : number){
+//         if(this.accumulator > e)
+//             this.accumulator = e;
+//     }
+//     getAaccumulator(){
+//         return this.accumulator;
+//     }
+// }
+// class SumProcesssor{
+//     constructor(private accumulator : number){
+//     }
+//     processElement(e : number){
+//         this.accumulator += e;
+//     }
+//     getAaccumulator(){
+//         return this.accumulator;
+//     }
+// }
+
+// class ArrayMinium{
+//     private processor: MiniumProcessor;
+//     constructor(accumulator : number){
+//         this.processor = new MiniumProcessor(accumulator);
+//     }
+//     process(arr : number[]){
+//         for(let i = 0 ; i < arr.length ; i++)
+//             this.processor.processElement(arr[i]);
+
+//         return this.processor.getAaccumulator(); //접근자 사용해서 필드 획득
+//     }
+//     // processElement(e : number){
+//     //     this.processor.processElement(e);
+//     // }
+// }
+
+// class ArraySum{
+//     private processor: SumProcesssor;
+//     constructor(accumulator : number){
+//         this.processor = new SumProcesssor(accumulator);
+//     }
+//     process(arr : number[]){
+//         for(let i = 0 ; i < arr.length ; i++)
+//                 this.processor.processElement(arr[i]);
+
+//         return this.processor.getAaccumulator(); //접근자 사용해서 필드 획득
+//     }
+//     // processElement(e : number){
+//     //     this.processor.processElement(e);
+//     // }
+// }
+/**
+
+다른 부분임
+
+**/
+
+// 구현에서 인터페이스 추출
+
+// class ArrayMinium{
+//     private processor: MiniumProcessor;
+//     constructor(accumulator : number){
+//         this.processor = new MiniumProcessor(accumulator);
+//     }
+//     process(arr : number[]){
+//         for(let i = 0 ; i < arr.length ; i++)
+//             this.processor.processElement(arr[i]);
+
+//         return this.processor.getAaccumulator(); //접근자 사용해서 필드 획득
+//     }
+//     // processElement(e : number){
+//     //     this.processor.processElement(e);
+//     // }
+// }
+
+
+
+class BatchProcessor{
+    // private processor: ElementProcesssor;
+    constructor(private processor : ElementProcesssor){
+        // this.processor = new SumProcesssor(accumulator); //인터페이스 대신 클래스를 인스턴스화
     }
-    processElement(e : number){
-        if(this.accumulator > e)
-            this.accumulator = e;
+    process(arr : number[]){
+        for(let i = 0 ; i < arr.length ; i++)
+            this.processor.processElement(arr[i]);
+        return this.processor.getAaccumulator(); //접근자 사용해서 필드 획득
     }
-    getAaccumulator(){
-        return this.accumulator;
-    }
+    // processElement(e : number){
+    //     this.processor.processElement(e);
+    // }
 }
-class SumProcesssor{
+
+interface ElementProcesssor{
+    processElement(e : number): void;
+    getAaccumulator() : number;
+}
+
+class SumProcesssor implements ElementProcesssor{
     constructor(private accumulator : number){
     }
     processElement(e : number){
@@ -217,44 +305,15 @@ class SumProcesssor{
     }
 }
 
-class ArrayMinium{
-    private processor: MiniumProcessor;
-    constructor(accumulator : number){
-        this.processor = new MiniumProcessor(accumulator);
+class MiniumProcessor implements ElementProcesssor{
+    constructor(private accumulator : number){
     }
-    process(arr : number[]){
-        for(let i = 0 ; i < arr.length ; i++)
-            this.processor.processElement(arr[i]);
-
-        return this.processor.getAaccumulator(); //접근자 사용해서 필드 획득
+    processElement(e : number){
+        if(this.accumulator > e)
+            this.accumulator = e;
     }
-    // processElement(e : number){
-    //     this.processor.processElement(e);
-    // }
+    getAaccumulator(){
+        return this.accumulator;
+    }
 }
 
-class ArraySum{
-    private processor: SumProcesssor;
-    constructor(accumulator : number){
-        this.processor = new SumProcesssor(accumulator);
-    }
-    process(arr : number[]){
-        for(let i = 0 ; i < arr.length ; i++)
-                this.processor.processElement(arr[i]);
-
-        return this.processor.getAaccumulator(); //접근자 사용해서 필드 획득
-    }
-    // processElement(e : number){
-    //     this.processor.processElement(e);
-    // }
-}
-
-
-
-/**
-
-다른 부분임
-
-**/
-
-// 구현에서 인터페이스 추출
