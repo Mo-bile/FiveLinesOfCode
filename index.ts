@@ -1,7 +1,7 @@
 
-const TILE_SIZE = 30;
-const FPS = 30;
-const SLEEP = 1000 / FPS;
+// const TILE_SIZE = 30;
+// const FPS = 30;
+// const SLEEP = 1000 / FPS;
 
 enum RawTile {
   AIR,
